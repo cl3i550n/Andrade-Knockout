@@ -8,3 +8,7 @@ client_scripts {
     'client/client.lua',
     'client/functions.lua'
 }
+
+shared_scripts {
+    'config.lua'
+}
