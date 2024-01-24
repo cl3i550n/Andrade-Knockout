@@ -12,3 +12,7 @@ client_scripts {
 shared_scripts {
     'config.lua'
 }
+
+author '<4NDR4D3/>'
+description 'Andrade-Knockout'
+version '1.0.0'
