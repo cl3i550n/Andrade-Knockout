@@ -1,7 +1,14 @@
 local VORPcore = exports.vorp_core:GetCore()
 
 function isPlayerKnockedOut(player)
-  return Citizen.InvokeNative(0x4E209B2C1EAD5159, player) and not IsEntityDead(player)
+  local attackerPed = GetPedSourceOfDeath(player)
+  local isNPC = IsEntityAPed(attackerPed) and not IsPedAPlayer(attackerPed)
+  local isPlayer = IsPedAPlayer(attackerPed)
+  local isPlayerUnarmed = wasUnarmedAtTime(attackerPed)
+  local isPedInMeleeCombat = Citizen.InvokeNative(0x4E209B2C1EAD5159, player) == 1
+  local isDead = IsEntityDead(player)
+
+  return isPedInMeleeCombat and not isDead and isPlayerUnarmed and (isPlayer or isNPC)
 end
 
 function handleKnockout(player)
@@ -15,4 +22,9 @@ function revivePlayer(player)
   SetPlayerInvincible(PlayerId(), false)
   ResetPedRagdollTimer(player)
   Citizen.InvokeNative(0xB4FD7446BAB2F394, "DeathFailMP01")
+end
+
+function wasUnarmedAtTime(player)
+  local retval, weaponHash = GetCurrentPedWeapon(player, true)
+  return retval and weaponHash == GetHashKey('WEAPON_UNARMED')
 end
